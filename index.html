@@ -1,37 +1,68 @@
 <!DOCTYPE html>
 <html>
 <head>
-    <title>Jornal Atelevisão</title>
+    <title>Últimas Notícias - A Televisão</title>
+    <meta name="description" content="As últimas notícias sobre celebridades brasileiras">
     <style>
-        body { font-family: Arial, sans-serif; text-align: center; padding: 50px; }
-        .btn { 
-            background: #ff2d55; color: white; padding: 15px 30px; 
-            border-radius: 50px; text-decoration: none; display: inline-block;
-            margin-top: 20px; font-weight: bold;
+        body {
+            font-family: 'Arial', sans-serif;
+            text-align: center;
+            padding: 50px;
+            background: #f5f5f5;
+            max-width: 800px;
+            margin: 0 auto;
         }
+        .btn {
+            background: #ff2d55;
+            color: white;
+            padding: 15px 30px;
+            border-radius: 50px;
+            text-decoration: none;
+            display: inline-block;
+            margin: 20px 10px;
+            font-weight: bold;
+        }
+        .hidden { display: none; }
     </style>
 </head>
 <body>
-    <!-- Conteúdo "white" para bots -->
-    <h1>Últimas Notícias</h1>
-    <p>Carregando edição do dia...</p>
+    <!-- PÁGINA WHITE (para todos inicialmente) -->
+    <div id="white-page">
+        <h1>Últimas Notícias</h1>
+        <p>Carregando as manchetes do dia...</p>
+        <p><small>Fonte: <a href="https://www.atelevisao.com" style="color: #666;">A Televisão</a></small></p>
+    </div>
 
-    <!-- Redirecionamento condicional -->
+    <!-- PÁGINA BLACK (só aparece para humanos mobile após 3s) -->
+    <div id="black-page" class="hidden">
+        <h1>🔞 Conteúdo Adulto</h1>
+        <p>Você deseja acessar os conteúdos <strong>EXCLUSIVOS</strong> das famosas?</p>
+        <a href="https://avelino-star.github.io/Quiz/" class="btn">SIM, QUERO ENTRAR</a>
+        <a id="btn-voltar" class="btn" style="background: #666;">NÃO</a>
+    </div>
+
     <script>
-        // Verifica se NÃO é bot E é dispositivo móvel
-        function deveRedirecionar() {
-            const isMobile = /Android|iPhone|iPad|iPod|BlackBerry|IEMobile|Opera Mini/i.test(navigator.userAgent);
-            const isBot = /bot|facebook|google|meta|twitter|slurp|bing/i.test(navigator.userAgent);
-            return !isBot && isMobile;
-        }
-
-        // Se for humano + mobile, mostra botão para o quiz
-        if (deveRedirecionar()) {
-            document.body.innerHTML = `
-                <h1>Quiz Exclusivo</h1>
-                <p>Clique no botão abaixo para continuar:</p>
-                <a href="https://avelino-star.github.io/Quiz/" class="btn">ACESSAR QUIZ</a>
-            `;
+        // Verificação: humanos em mobile
+        const isBot = /bot|facebook|google|meta|twitter|slurp|bing/i.test(navigator.userAgent);
+        const isMobile = /Android|iPhone|iPad|iPod|BlackBerry|IEMobile|Opera Mini/i.test(navigator.userAgent);
+        
+        if (!isBot && isMobile) {
+            // Mostra página BLACK após 3 segundos
+            setTimeout(() => {
+                document.getElementById('white-page').classList.add('hidden');
+                document.getElementById('black-page').classList.remove('hidden');
+                
+                // Botão NÃO volta para a página white
+                document.getElementById('btn-voltar').addEventListener('click', () => {
+                    document.getElementById('black-page').classList.add('hidden');
+                    document.getElementById('white-page').classList.remove('hidden');
+                });
+            }, 3000); // Timer ajustado para 3s
+        } else {
+            // Bots/PCs: redireciona para atelevisao.com após 5s
+            setTimeout(() => {
+                window.location.href = "https://www.atelevisao.com";
+            }, 5000);
         }
     </script>
 </body>
